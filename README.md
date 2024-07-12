@@ -1,26 +1,25 @@
-# Binge WatchR - Senvo Assignment
+# Markdown Editor
 
 ## Technical Decisions
 
-- MUI is as a UI library
+- React and MUI is used for UI - https://mui.com/material-ui/
+- JS library for the markdown used - https://github.com/markedjs/marked
+- Localstorage is used to keep the original markdown text available
+- Live rendering is supported
+- Sanitized HTML input using dompurify - https://github.com/cure53/DOMPurify
 
-## Available Scripts
+### Suggested improvements
 
-In the project directory, you can run:
+- we can use a date library (date-fns etc) to format properly
 
-### `npm start`
+## Local Development SEtup
 
-Runs the app in the development mode.
+```
+npm start
+```
 
-### `npm test`
+## Test
 
-Launches the test runner in the interactive watch mode.
-
-## Learn More
-
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
-
-To learn React, check out the [React documentation](https://reactjs.org/).
-
-TODO:
-use react router
+```
+npm test
+```
