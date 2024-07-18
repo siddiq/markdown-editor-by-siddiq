@@ -1,13 +1,9 @@
 import React, { useState, useEffect } from "react"
-import {
-  Container,
-  Grid,
-  TextareaAutosize,
-  Typography,
-  Paper
-} from "@mui/material"
+import { Container, Grid, Typography } from "@mui/material"
 import { marked } from "marked"
 import DOMPurify from "dompurify"
+import MarkdownEditor from "./components/MarkdownEditor"
+import MarkdownPreview from "./components/MarkdownPreview"
 
 const App: React.FC = () => {
   const [markdown, setMarkdown] = useState<string>(() => {
@@ -38,31 +34,13 @@ const App: React.FC = () => {
       </Typography>
       <Grid container spacing={3}>
         <Grid item xs={12} md={6}>
-          <Paper elevation={3} style={{ padding: "16px" }}>
-            <Typography variant="h6" gutterBottom>
-              Editor
-            </Typography>
-            <TextareaAutosize
-              data-testid="input"
-              minRows={10}
-              value={markdown}
-              onChange={handleInputChange}
-              placeholder="Markdown input ..."
-              data-gramm="false"
-              style={{ width: "100%" }}
-            />
-          </Paper>
+          <MarkdownEditor
+            markdown={markdown}
+            handleInputChange={handleInputChange}
+          />
         </Grid>
         <Grid item xs={12} md={6}>
-          <Paper elevation={3} style={{ padding: "16px" }}>
-            <Typography variant="h6" gutterBottom>
-              Preview
-            </Typography>
-            <div
-              data-testid="preview"
-              dangerouslySetInnerHTML={{ __html: sanitizedHtml }}
-            />
-          </Paper>
+          <MarkdownPreview sanitizedHtml={sanitizedHtml} />
         </Grid>
       </Grid>
     </Container>

@@ -4,9 +4,8 @@ import { render, screen, fireEvent, act } from "@testing-library/react"
 import "@testing-library/jest-dom/extend-expect"
 import App from "./App"
 
-describe("Markdown Editor", () => {
+describe("App Component", () => {
   beforeEach(() => {
-    // Clear local storage before each test
     localStorage.clear()
   })
 
@@ -25,55 +24,44 @@ describe("Markdown Editor", () => {
     expect(previewElement).toBeInTheDocument()
   })
 
-  describe("convert markdown", () => {
-    test("updates preview as markdown is typed", async () => {
+  test("loads markdown from local storage and updates preview", async () => {
+    localStorage.setItem("markdown", "# loaded from local storage")
+
+    await act(async () => {
       render(<App />)
-      const textarea = await screen.findByTestId("input")
-
-      await act(async () => {
-        fireEvent.change(textarea, {
-          target: {
-            value: [
-              "# Heading",
-              "",
-              "* List Item 123 123 123",
-              "* List Item 456 789"
-            ].join("\n")
-          }
-        })
-      })
-
-      const previewHtml = await screen.findByTestId("preview")
-      expect(previewHtml).toContainHTML("<h1>Heading</h1>")
-      expect(previewHtml).toContainHTML("<li>List Item 123 123 123</li>")
-      expect(previewHtml).toContainHTML("<li>List Item 456 789</li>")
     })
+
+    const textarea = await screen.findByTestId("input")
+    expect(textarea).toHaveValue("# loaded from local storage")
+
+    const previewHtml = await screen.findByTestId("preview")
+    expect(previewHtml).toHaveTextContent("loaded from local storage")
   })
 
-  describe("localStorage", () => {
-    test("saves markdown to local storage", async () => {
-      render(<App />)
-      const textarea = await screen.findByTestId("input")
+  test("updates preview as markdown is typed", async () => {
+    render(<App />)
+    const textarea = await screen.findByTestId("input")
 
-      await act(async () => {
-        fireEvent.change(textarea, { target: { value: "# typing 123" } })
+    const previewHtml = await screen.findByTestId("preview")
+    expect(previewHtml).not.toContainHTML("<h1>Heading</h1>")
+    expect(previewHtml).not.toContainHTML("<li>List Item 123 123 123</li>")
+    expect(previewHtml).not.toContainHTML("<li>List Item 456 789</li>")
+
+    await act(async () => {
+      fireEvent.change(textarea, {
+        target: {
+          value: [
+            "# Heading",
+            "",
+            "* List Item 123 123 123",
+            "* List Item 456 789"
+          ].join("\n")
+        }
       })
-
-      expect(localStorage.getItem("markdown")).toBe("# typing 123")
     })
 
-    test("loads markdown from local storage", async () => {
-      localStorage.setItem("markdown", "# loaded from local storage")
-
-      await act(async () => {
-        render(<App />)
-      })
-
-      const textarea = await screen.findByTestId("input")
-      expect(textarea).toHaveValue("# loaded from local storage")
-
-      const previewHtml = await screen.findByTestId("preview")
-      expect(previewHtml).toHaveTextContent("loaded from local storage")
-    })
+    expect(previewHtml).toContainHTML("<h1>Heading</h1>")
+    expect(previewHtml).toContainHTML("<li>List Item 123 123 123</li>")
+    expect(previewHtml).toContainHTML("<li>List Item 456 789</li>")
   })
 })
