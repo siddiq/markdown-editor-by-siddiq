@@ -15,13 +15,13 @@ describe("App Component", () => {
     expect(titleElement).toBeInTheDocument()
   })
 
-  test("renders editor and preview sections", () => {
+  test("renders editor and preview sections", async () => {
     render(<App />)
     const editorElement = screen.getByText("Editor")
     expect(editorElement).toBeInTheDocument()
 
-    const previewElement = screen.getByText("Preview")
-    expect(previewElement).toBeInTheDocument()
+    const previewElement = await screen.findAllByText("Preview")
+    expect(previewElement).toHaveLength(2)
   })
 
   test("loads markdown from local storage and updates preview", async () => {
@@ -54,7 +54,9 @@ describe("App Component", () => {
             "# Heading",
             "",
             "* List Item 123 123 123",
-            "* List Item 456 789"
+            "* List Item 456 789",
+            "",
+            "Before <script>alert('hello');</script>After"
           ].join("\n")
         }
       })
@@ -63,5 +65,6 @@ describe("App Component", () => {
     expect(previewHtml).toContainHTML("<h1>Heading</h1>")
     expect(previewHtml).toContainHTML("<li>List Item 123 123 123</li>")
     expect(previewHtml).toContainHTML("<li>List Item 456 789</li>")
+    expect(previewHtml).toContainHTML("Before After")
   })
 })
